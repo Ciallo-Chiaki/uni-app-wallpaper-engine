@@ -1,7 +1,7 @@
 <template>
   <view class="themeItem">
     <navigator
-      url="/pages/"
+      url="../../pages/classlist/classlist"
       open-type="navigate"
       hover-class="navigator-hover"
       class="box"
@@ -17,8 +17,8 @@
     </navigator>
 
     <navigator
-      url="/pages/"
-      open-type="navigate"
+      url="/pages/classify/classify"
+      open-type="reLaunch"
       hover-class="navigator-hover"
       class="box more"
       v-if="isMore"

@@ -1,5 +1,7 @@
 <template>
   <view class="homeLayout pageBg">
+    <custom-nav-bar></custom-nav-bar>
+
     <view class="banner">
       <swiper
         indicator-dots
@@ -31,6 +33,7 @@
         <uni-icons type="right" color="#333" size="16" />
       </view>
     </view>
+
     <!-- 每日推荐 -->
     <view class="select">
       <common-title>

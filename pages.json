@@ -4,20 +4,38 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "uni-app"
+        "navigationBarTitleText": "uni-app",
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/classify/classify",
       "style": {
         "navigationBarTitleText": "分类",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/user/user",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/classlist/classlist",
+      "style": {
+        "navigationBarTitleText": "分类列表",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/preview/preview",
+      "style": {
+        "navigationBarTitleText": "预览",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     }
   ],

@@ -4,7 +4,7 @@
       "list": [
         {
           "name": "pages/classify/classify",
-          "pathName": "pages/classify/classify",
+          "pathName": "pages/classlist/classlist",
           "query": "",
           "scene": null,
           "launchMode": "default"

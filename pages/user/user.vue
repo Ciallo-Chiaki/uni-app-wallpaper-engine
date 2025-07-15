@@ -10,7 +10,11 @@
 
     <view class="section">
       <view class="list">
-        <view class="row">
+        <!-- 跳转classlist -->
+        <view
+          class="row"
+          @click="() => uni.navigateTo({ url: '/pages/classlist/classlist' })"
+        >
           <view class="left">
             <uni-icons type="download-filled" color="#28b389" size="20" />
             <view class="text">我的下载</view>
@@ -20,7 +24,11 @@
             <uni-icons type="right" color="#aaa" size="16" />
           </view>
         </view>
-        <view class="row">
+
+        <view
+          class="row"
+          @click="() => uni.navigateTo({ url: '/pages/classlist/classlist' })"
+        >
           <view class="left">
             <uni-icons type="star-filled" color="#28b389" size="20" />
             <view class="text">我的评分</view>

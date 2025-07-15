@@ -25,28 +25,24 @@ const _sfc_main = {
           color: "#aaa",
           size: "16"
         }),
-        d: common_vendor.p({
+        d: common_vendor.o(() => common_vendor.index.navigateTo({
+          url: "/pages/classlist/classlist"
+        })),
+        e: common_vendor.p({
           type: "star-filled",
           color: "#28b389",
           size: "20"
         }),
-        e: common_vendor.p({
-          type: "right",
-          color: "#aaa",
-          size: "16"
-        }),
         f: common_vendor.p({
-          type: "chatboxes-filled",
-          color: "#28b389",
-          size: "20"
-        }),
-        g: common_vendor.p({
           type: "right",
           color: "#aaa",
           size: "16"
         }),
+        g: common_vendor.o(() => common_vendor.index.navigateTo({
+          url: "/pages/classlist/classlist"
+        })),
         h: common_vendor.p({
-          type: "notification-filled",
+          type: "chatboxes-filled",
           color: "#28b389",
           size: "20"
         }),
@@ -56,11 +52,21 @@ const _sfc_main = {
           size: "16"
         }),
         j: common_vendor.p({
-          type: "flag-filled",
+          type: "notification-filled",
           color: "#28b389",
           size: "20"
         }),
         k: common_vendor.p({
+          type: "right",
+          color: "#aaa",
+          size: "16"
+        }),
+        l: common_vendor.p({
+          type: "flag-filled",
+          color: "#28b389",
+          size: "20"
+        }),
+        m: common_vendor.p({
           type: "right",
           color: "#aaa",
           size: "16"
