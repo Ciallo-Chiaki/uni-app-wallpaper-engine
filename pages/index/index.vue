@@ -1,6 +1,6 @@
 <template>
   <view class="homeLayout pageBg">
-    <custom-nav-bar></custom-nav-bar>
+    <custom-nav-bar title="推荐"></custom-nav-bar>
 
     <view class="banner">
       <swiper
@@ -10,8 +10,8 @@
         autoplay
         circular
       >
-        <swiper-item v-for="item in 3">
-          <image src="../../common/images/banner1.jpg" mode="scaleToFill" />
+        <swiper-item v-for="item in bannerList" :key="item._id">
+          <image :src="item.picurl" mode="scaleToFill" />
         </swiper-item>
       </swiper>
     </view>
@@ -23,10 +23,11 @@
       </view>
       <view class="center">
         <swiper vertical autoplay interval="1500" duration="300" circular>
-          <swiper-item v-for="item in 4"
-            >Lorem ipsum dolor sit amet consectetur adipisicing
-            elit.</swiper-item
-          >
+          <swiper-item v-for="item in noticeList" :key="item._id">
+            <navigator url="/pages/notice/notice">
+              {{ item.title }}
+            </navigator>
+          </swiper-item>
         </swiper>
       </view>
       <view class="right">
@@ -49,12 +50,13 @@
       </common-title>
       <view class="content">
         <scroll-view scroll-x="true">
-          <view class="box" v-for="item in 10">
-            <image
-              class="pic"
-              src="../../common/images/preview_small.webp"
-              mode="aspectFill"
-            />
+          <view
+            class="box"
+            v-for="item in randomList"
+            :key="item._id"
+            @click="goPreview"
+          >
+            <image class="pic" :src="item.smallPicurl" mode="aspectFill" />
           </view>
         </scroll-view>
       </view>
@@ -75,14 +77,70 @@
         </template>
       </common-title>
       <view class="content">
-        <theme-item v-for="item in 8"></theme-item>
+        <theme-item
+          v-for="item in classifyList"
+          :key="item._id"
+          :item="item"
+        ></theme-item>
         <theme-item :isMore="true"></theme-item>
       </view>
     </view>
   </view>
 </template>
 
-<script setup></script>
+<script setup>
+// 本项目中所有代码推测和交流请使用中文
+import { ref } from "vue";
+import {
+  apiGetBanner,
+  apiGetDayRandom,
+  apiGetNotice,
+  apiGetClassify,
+} from "@/api/apis.js";
+
+const bannerList = ref([]);
+const randomList = ref([]);
+const noticeList = ref([]);
+const classifyList = ref([]);
+
+// 获取轮播图
+const getBanner = async () => {
+  let res = await apiGetBanner();
+  bannerList.value = res.data;
+};
+
+// 获取每日推荐
+const getDayRandom = async () => {
+  let res = await apiGetDayRandom();
+  randomList.value = res.data;
+};
+
+// 获取公告列表
+const getNotice = async () => {
+  let res = await apiGetNotice({ select: true });
+  noticeList.value = res.data;
+};
+
+// 获取分类列表
+const getClassify = async () => {
+  let res = await apiGetClassify({
+    select: true,
+  });
+  classifyList.value = res.data;
+};
+
+// 跳转到预览页面
+const goPreview = () => {
+  uni.navigateTo({
+    url: "/pages/preview/preview",
+  });
+};
+
+getBanner();
+getDayRandom();
+getNotice();
+getClassify();
+</script>
 
 <style lang="scss" scoped>
 .homeLayout {

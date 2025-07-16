@@ -1,19 +1,15 @@
 <template>
   <view class="themeItem">
     <navigator
-      url="../../pages/classlist/classlist"
+      :url="'/pages/classlist/classlist?id=' + item._id + '&name=' + item.name"
       open-type="navigate"
       hover-class="navigator-hover"
       class="box"
       v-if="!isMore"
     >
-      <image
-        class="pic"
-        src="../../common/images/classify1.jpg"
-        mode="aspectFill"
-      />
-      <view class="mask">123</view>
-      <view class="tab">3天前更新</view>
+      <image class="pic" :src="item.picurl" mode="aspectFill" />
+      <view class="mask">{{ item.name }}</view>
+      <view class="tab">{{ formatTime(item.updateTime) }}</view>
     </navigator>
 
     <navigator
@@ -33,11 +29,23 @@
 </template>
 
 <script setup>
+import { defineProps } from "vue";
+import { formatTime } from "@/utils/common.js";
 defineProps({
   // 可以添加需要的props
   isMore: {
     type: Boolean,
     default: false,
+  },
+  item: {
+    type: Object,
+    default() {
+      return {
+        name: "默认名称",
+        picurl: "../../common/images/classify1.jpg",
+        updateTime: "3天前",
+      };
+    },
   },
 });
 </script>

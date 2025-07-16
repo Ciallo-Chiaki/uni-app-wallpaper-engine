@@ -1,7 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const common_assets = require("../../common/assets.js");
-const _sfc_main = {};
+const api_apis = require("../../api/apis.js");
 if (!Array) {
   const _easycom_custom_nav_bar2 = common_vendor.resolveComponent("custom-nav-bar");
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
@@ -18,48 +17,99 @@ const _easycom_theme_item = () => "../../components/theme-item/theme-item.js";
 if (!Math) {
   (_easycom_custom_nav_bar + _easycom_uni_icons + _easycom_uni_dateformat + _easycom_common_title + _easycom_theme_item)();
 }
-function _sfc_render(_ctx, _cache) {
-  return {
-    a: common_vendor.f(3, (item, k0, i0) => {
-      return {};
-    }),
-    b: common_assets._imports_0,
-    c: common_vendor.p({
-      type: "sound-filled",
-      color: "#28b389",
-      size: "30"
-    }),
-    d: common_vendor.f(4, (item, k0, i0) => {
-      return {};
-    }),
-    e: common_vendor.p({
-      type: "right",
-      color: "#333",
-      size: "16"
-    }),
-    f: common_vendor.p({
-      type: "calendar",
-      color: "#28b389",
-      size: "18"
-    }),
-    g: common_vendor.p({
-      date: Date.now(),
-      format: "dd日"
-    }),
-    h: common_vendor.f(10, (item, k0, i0) => {
-      return {};
-    }),
-    i: common_assets._imports_1,
-    j: common_vendor.f(8, (item, k0, i0) => {
+const _sfc_main = {
+  __name: "index",
+  setup(__props) {
+    const bannerList = common_vendor.ref([]);
+    const randomList = common_vendor.ref([]);
+    const noticeList = common_vendor.ref([]);
+    const classifyList = common_vendor.ref([]);
+    const getBanner = async () => {
+      let res = await api_apis.apiGetBanner();
+      bannerList.value = res.data;
+    };
+    const getDayRandom = async () => {
+      let res = await api_apis.apiGetDayRandom();
+      randomList.value = res.data;
+    };
+    const getNotice = async () => {
+      let res = await api_apis.apiGetNotice({ select: true });
+      noticeList.value = res.data;
+    };
+    const getClassify = async () => {
+      let res = await api_apis.apiGetClassify({
+        select: true
+      });
+      classifyList.value = res.data;
+    };
+    const goPreview = () => {
+      common_vendor.index.navigateTo({
+        url: "/pages/preview/preview"
+      });
+    };
+    getBanner();
+    getDayRandom();
+    getNotice();
+    getClassify();
+    return (_ctx, _cache) => {
       return {
-        a: "1cf27b2a-7-" + i0
+        a: common_vendor.p({
+          title: "推荐"
+        }),
+        b: common_vendor.f(bannerList.value, (item, k0, i0) => {
+          return {
+            a: item.picurl,
+            b: item._id
+          };
+        }),
+        c: common_vendor.p({
+          type: "sound-filled",
+          color: "#28b389",
+          size: "30"
+        }),
+        d: common_vendor.f(noticeList.value, (item, k0, i0) => {
+          return {
+            a: common_vendor.t(item.title),
+            b: item._id
+          };
+        }),
+        e: common_vendor.p({
+          type: "right",
+          color: "#333",
+          size: "16"
+        }),
+        f: common_vendor.p({
+          type: "calendar",
+          color: "#28b389",
+          size: "18"
+        }),
+        g: common_vendor.p({
+          date: Date.now(),
+          format: "dd日"
+        }),
+        h: common_vendor.f(randomList.value, (item, k0, i0) => {
+          return {
+            a: item.smallPicurl,
+            b: item._id,
+            c: common_vendor.o(goPreview, item._id)
+          };
+        }),
+        i: common_vendor.f(classifyList.value, (item, k0, i0) => {
+          return {
+            a: item._id,
+            b: "1cf27b2a-7-" + i0,
+            c: common_vendor.p({
+              item
+            })
+          };
+        }),
+        j: common_vendor.p({
+          isMore: true
+        })
       };
-    }),
-    k: common_vendor.p({
-      isMore: true
-    })
-  };
-}
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);
+    };
+  }
+};
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-1cf27b2a"]]);
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/index/index.js.map

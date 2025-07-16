@@ -1,18 +1,25 @@
 <template>
   <view class="preview">
     <swiper circular>
-      <swiper-item v-for="item in 5" :key="item">
-        <image
-          @click="maskChange"
-          src="../../common/images/preview1.jpg"
-          mode="aspectFill"
-        />
+      <swiper-item v-for="item in classList" :key="item._id">
+        <image @click="maskChange" :src="item.picurl" mode="aspectFill" />
       </swiper-item>
     </swiper>
 
     <view class="mask" v-if="maskState">
-      <view class="goBack"></view>
-      <view class="count">3 / 9</view>
+      <view
+        class="goBack"
+        @click="goBack"
+        :style="{ top: getStatusBarHeight() + 'px' }"
+      >
+        <uni-icons
+          type="back"
+          color="#fff"
+          size="30"
+          @click="maskChange"
+        ></uni-icons>
+      </view>
+      <view class="count">3 / {{ classList.length }}</view>
       <view class="time">
         <uni-dateformat :date="Date.now()" format="hh:mm" />
       </view>
@@ -128,11 +135,23 @@
 
 <script setup>
 import { ref } from "vue";
+import { getStatusBarHeight } from "@/utils/system";
 
 const maskState = ref(true);
 const infoPopup = ref(null);
 const scorePopup = ref(null);
 const userScore = ref(0);
+const classList = ref([]);
+
+const strorgClassList = uni.getStorageSync("storgeClassList") || [];
+classList.value = strorgClassList.map((item) => {
+  return {
+    ...item,
+    picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
+  };
+});
+console.log("获取缓存的分类列表", strorgClassList);
+console.log("处理后的分类列表", classList.value);
 
 // 点击info弹窗
 const clickInfo = () => {
@@ -162,6 +181,11 @@ const submitScore = () => {
 const maskChange = () => {
   maskState.value = !maskState.value;
 };
+
+// 返回上一页
+const goBack = () => {
+  uni.navigateBack();
+};
 </script>
 
 <style lang="scss" scoped>
@@ -189,6 +213,18 @@ const maskChange = () => {
       color: #fff;
     }
     .goBack {
+      width: 76rpx;
+      height: 76rpx;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 76rpx;
+      margin-left: 0;
+      top: 0;
+      left: 30rpx;
+      backdrop-filter: blur(10rpx);
+      // border: 1px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .count {
       top: 10vh;
