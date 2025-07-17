@@ -23,6 +23,8 @@ const _sfc_main = {
     const scorePopup = common_vendor.ref(null);
     const userScore = common_vendor.ref(0);
     const classList = common_vendor.ref([]);
+    const currentId = common_vendor.ref(null);
+    const currentIndex = common_vendor.ref(0);
     const strorgClassList = common_vendor.index.getStorageSync("storgeClassList") || [];
     classList.value = strorgClassList.map((item) => {
       return {
@@ -30,8 +32,14 @@ const _sfc_main = {
         picurl: item.smallPicurl.replace("_small.webp", ".jpg")
       };
     });
-    common_vendor.index.__f__("log", "at pages/preview/preview.vue:153", "获取缓存的分类列表", strorgClassList);
-    common_vendor.index.__f__("log", "at pages/preview/preview.vue:154", "处理后的分类列表", classList.value);
+    common_vendor.index.__f__("log", "at pages/preview/preview.vue:156", "获取缓存的分类列表", strorgClassList);
+    common_vendor.index.__f__("log", "at pages/preview/preview.vue:157", "处理后的分类列表", classList.value);
+    common_vendor.onLoad((e) => {
+      currentId.value = e.id || null;
+      currentIndex.value = classList.value.findIndex((item) => {
+        return item._id === currentId.value;
+      });
+    });
     const clickInfo = () => {
       infoPopup.value.open();
     };
@@ -45,7 +53,7 @@ const _sfc_main = {
       scorePopup.value.close();
     };
     const submitScore = () => {
-      common_vendor.index.__f__("log", "at pages/preview/preview.vue:177", `用户评分: ${userScore.value}`);
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:189", `用户评分: ${userScore.value}`);
     };
     const maskChange = () => {
       maskState.value = !maskState.value;
@@ -72,72 +80,73 @@ const _sfc_main = {
         }),
         e: common_vendor.o(goBack),
         f: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
-        g: common_vendor.t(classList.value.length),
-        h: common_vendor.p({
+        g: common_vendor.t(currentIndex.value + 1),
+        h: common_vendor.t(classList.value.length),
+        i: common_vendor.p({
           date: Date.now(),
           format: "hh:mm"
         }),
-        i: common_vendor.p({
+        j: common_vendor.p({
           date: Date.now(),
           format: "MM月dd日"
         }),
-        j: common_vendor.p({
+        k: common_vendor.p({
           type: "info",
           color: "#000",
           size: "24"
         }),
-        k: common_vendor.o(clickInfo),
-        l: common_vendor.p({
+        l: common_vendor.o(clickInfo),
+        m: common_vendor.p({
           type: "star",
           color: "#000",
           size: "24"
         }),
-        m: common_vendor.o(clickScore),
-        n: common_vendor.p({
+        n: common_vendor.o(clickScore),
+        o: common_vendor.p({
           type: "download",
           color: "#000",
           size: "24"
         })
       } : {}, {
-        o: common_vendor.p({
+        p: common_vendor.p({
           type: "closeempty",
           color: "#999",
           size: "18"
         }),
-        p: common_vendor.o(clickInfoClose),
-        q: common_vendor.p({
+        q: common_vendor.o(clickInfoClose),
+        r: common_vendor.p({
           readonly: true,
           touchable: true,
           value: "3.7",
           size: "16"
         }),
-        r: common_vendor.f(3, (item, k0, i0) => {
+        s: common_vendor.f(3, (item, k0, i0) => {
           return {};
         }),
-        s: common_vendor.sr(infoPopup, "2dad6c07-6", {
+        t: common_vendor.sr(infoPopup, "2dad6c07-6", {
           "k": "infoPopup"
         }),
-        t: common_vendor.p({
+        v: common_vendor.p({
           type: "bottom"
         }),
-        v: common_vendor.p({
+        w: common_vendor.p({
           type: "closeempty",
           color: "#999",
           size: "18"
         }),
-        w: common_vendor.o(clickScoreClose),
-        x: common_vendor.o(($event) => userScore.value = $event),
-        y: common_vendor.p({
+        x: common_vendor.o(clickScoreClose),
+        y: common_vendor.o(($event) => userScore.value = $event),
+        z: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value
         }),
-        z: common_vendor.t(userScore.value),
-        A: common_vendor.o(submitScore),
-        B: !userScore.value,
-        C: common_vendor.sr(scorePopup, "2dad6c07-9", {
+        A: common_vendor.t(userScore.value),
+        B: common_vendor.o(submitScore),
+        C: !userScore.value,
+        D: common_vendor.sr(scorePopup, "2dad6c07-9", {
           "k": "scorePopup"
         }),
-        D: common_vendor.p({
+        E: common_vendor.p({
           ["is-mask-click"]: false,
           type: "center"
         })

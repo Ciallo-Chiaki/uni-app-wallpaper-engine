@@ -6,7 +6,7 @@
 
     <view class="content">
       <navigator
-        url="/pages/preview/preview"
+        :url="'/pages/preview/preview?id=' + item._id"
         class="item"
         v-for="item in classList"
         :key="item._id"

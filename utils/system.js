@@ -13,7 +13,7 @@ console.log("获取系统状态栏信息", WINDOW_INFO);
 // #endif
 
 export const getStatusBarHeight = () => {
-  let value;
+  let value = 20;
   // #ifdef MP-WEIXIN
   console.log("获取状态栏高度", WINDOW_INFO.statusBarHeight);
 
@@ -30,14 +30,23 @@ export const getStatusBarHeight = () => {
 // 处理标题栏高度
 export const getTitleBarHeight = () => {
   // 获取胶囊按钮信息并且解构
-  let { top, height } = uni.getMenuButtonBoundingClientRect();
-  // 计算返回值 调用 getStatusBarHeight() 获取状态栏高度
-  // 返回值为胶囊按钮顶部位置 - 状态栏高度 * 2
-
-  return (top - getStatusBarHeight()) * 2 + height;
+  if (uni.getMenuButtonBoundingClientRect) {
+    let { top, height } = uni.getMenuButtonBoundingClientRect();
+    // 计算返回值 调用 getStatusBarHeight() 获取状态栏高度
+    // 返回值为胶囊按钮顶部位置 - 状态栏高度 * 2
+    return (top - getStatusBarHeight()) * 2 + height;
+  } else {
+    return 40;
+  }
 };
 
-export const getNavBarHeight = () => getStatusBarHeight() + getTitleBarHeight();
+export const getNavBarHeight = () => {
+  if (uni.getMenuButtonBoundingClientRect) {
+    return getStatusBarHeight() + getTitleBarHeight();
+  } else {
+    return 30;
+  }
+};
 
 export const getLeftIconLeft = () => {
   // #ifdef MP-TOUTIAO

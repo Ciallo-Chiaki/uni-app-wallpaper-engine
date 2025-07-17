@@ -19,7 +19,7 @@
           @click="maskChange"
         ></uni-icons>
       </view>
-      <view class="count">3 / {{ classList.length }}</view>
+      <view class="count">{{ currentIndex + 1 }} / {{ classList.length }}</view>
       <view class="time">
         <uni-dateformat :date="Date.now()" format="hh:mm" />
       </view>
@@ -136,12 +136,15 @@
 <script setup>
 import { ref } from "vue";
 import { getStatusBarHeight } from "@/utils/system";
+import { onLoad } from "@dcloudio/uni-app";
 
 const maskState = ref(true);
 const infoPopup = ref(null);
 const scorePopup = ref(null);
 const userScore = ref(0);
 const classList = ref([]);
+const currentId = ref(null);
+const currentIndex = ref(0);
 
 const strorgClassList = uni.getStorageSync("storgeClassList") || [];
 classList.value = strorgClassList.map((item) => {
@@ -152,6 +155,15 @@ classList.value = strorgClassList.map((item) => {
 });
 console.log("获取缓存的分类列表", strorgClassList);
 console.log("处理后的分类列表", classList.value);
+
+onLoad((e) => {
+  // 页面加载时获取分类列表
+  // console.log("e", e.id);
+  currentId.value = e.id || null;
+  currentIndex.value = classList.value.findIndex((item) => {
+    return item._id === currentId.value;
+  });
+});
 
 // 点击info弹窗
 const clickInfo = () => {
