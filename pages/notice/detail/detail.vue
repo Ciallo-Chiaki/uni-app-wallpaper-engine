@@ -1,22 +1,7 @@
 <template>
-	<view>
-		
-	</view>
+  <view> </view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				
-			}
-		},
-		methods: {
-			
-		}
-	}
-</script>
+<script setup></script>
 
-<style>
-
-</style>
+<style lang="scss" scoped></style>

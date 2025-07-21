@@ -28,9 +28,16 @@ function apiGetClassList(data = {}) {
     data
   });
 }
+function apiGetSetupScore(data = {}) {
+  return utils_request.request({
+    url: "/setupScore",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetDayRandom = apiGetDayRandom;
 exports.apiGetNotice = apiGetNotice;
+exports.apiGetSetupScore = apiGetSetupScore;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/apis.js.map

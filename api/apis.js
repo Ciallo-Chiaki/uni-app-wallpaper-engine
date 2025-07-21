@@ -37,3 +37,11 @@ export function apiGetClassList(data = {}) {
     data: data,
   });
 }
+
+// 为壁纸评分
+export function apiGetSetupScore(data = {}) {
+  return request({
+    url: "/setupScore",
+    data: data,
+  });
+}

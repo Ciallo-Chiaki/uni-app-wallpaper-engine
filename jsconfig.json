@@ -1,0 +1,5 @@
+{
+  "vueCompilerOptions": {
+    "globalTypesPath": "./types/uni-app.d.ts"
+  }
+}

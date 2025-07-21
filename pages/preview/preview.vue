@@ -1,10 +1,16 @@
 <template>
   <view class="preview">
-    <swiper circular>
-      <swiper-item v-for="item in classList" :key="item._id">
-        <image @click="maskChange" :src="item.picurl" mode="aspectFill" />
+    <swiper circular :current="currentIndex" @change="swiperChange">
+      <swiper-item v-for="(item, index) in classList" :key="item._id">
+        <image
+          v-if="readImgs.includes(index)"
+          @click="maskChange"
+          :src="item.picurl"
+          mode="aspectFill"
+        />
       </swiper-item>
     </swiper>
+    {{ readImgs }}
 
     <view class="mask" v-if="maskState">
       <view
@@ -33,9 +39,9 @@
         </view>
         <view class="box" @click="clickScore">
           <uni-icons type="star" color="#000" size="24" />
-          <view class="text">5分</view>
+          <view class="text">{{ currentInfo.score }}分</view>
         </view>
-        <view class="box">
+        <view class="box" @click="clickDownload">
           <uni-icons type="download" color="#000" size="24" />
           <view class="text">下载</view>
         </view>
@@ -55,39 +61,48 @@
           <view class="content">
             <view class="row">
               <view class="label">壁纸ID：</view>
-              <text selectable class="value">123123123123</text>
+              <text selectable class="value">{{ currentInfo._id }}</text>
             </view>
 
-            <view class="row">
+            <!-- <view class="row">
               <view class="label">分类：</view>
-              <text class="value class">明星美女</text>
-            </view>
+              <text class="value class">{{ currentInfo.category }}</text>
+            </view> -->
 
             <view class="row">
               <view class="label">发布者：</view>
-              <text class="value">若叶睦</text>
+              <text class="value">{{ currentInfo.nickname }}</text>
             </view>
 
             <view class="row">
               <view class="label">评分：</view>
               <view class="value roteBox">
-                <uni-rate readonly touchable value="3.7" size="16" />
-                <text class="score">5分</text>
+                <uni-rate
+                  readonly
+                  touchable
+                  :value="currentInfo.score"
+                  size="16"
+                />
+                <text class="score">{{ currentInfo.score }}分</text>
               </view>
             </view>
 
             <view class="row">
               <view class="label">摘要：</view>
-              <text selectable class="value"
-                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Laboriosam, ipsum perspiciatis.
+              <text selectable class="value">
+                {{ currentInfo.description }}
               </text>
             </view>
 
             <view class="row">
               <view class="label">标签：</view>
               <view class="value tabs">
-                <view class="tab" v-for="item in 3">标签名</view>
+                <view
+                  class="tab"
+                  v-for="item in currentInfo.tabs"
+                  :key="item"
+                  >{{ item }}</view
+                >
               </view>
             </view>
 
@@ -106,21 +121,28 @@
       <view class="scorePopup">
         <view class="popHeader">
           <view></view>
-          <view class="title">壁纸评分</view>
+          <view class="title">{{
+            isScore ? "已经评过分啦 ~" : "壁纸评分"
+          }}</view>
           <view class="close" @click="clickScoreClose">
             <uni-icons type="closeempty" color="#999" size="18" />
           </view>
         </view>
 
         <view class="content">
-          <uni-rate v-model="userScore" allowHalf />
+          <uni-rate
+            v-model="userScore"
+            allowHalf
+            :disabled="isScore"
+            disabled-color="#FFCA3E"
+          />
           <text class="scoreText">{{ userScore }}分</text>
         </view>
 
         <view class="footer">
           <button
             @click="submitScore"
-            :disabled="!userScore"
+            :disabled="!userScore || isScore"
             type="default"
             size="mini"
             plain
@@ -137,6 +159,7 @@
 import { ref } from "vue";
 import { getStatusBarHeight } from "@/utils/system";
 import { onLoad } from "@dcloudio/uni-app";
+import { apiGetSetupScore } from "@/api/apis";
 
 const maskState = ref(true);
 const infoPopup = ref(null);
@@ -145,6 +168,9 @@ const userScore = ref(0);
 const classList = ref([]);
 const currentId = ref(null);
 const currentIndex = ref(0);
+const readImgs = ref([]);
+const currentInfo = ref(null);
+const isScore = ref(false);
 
 const strorgClassList = uni.getStorageSync("storgeClassList") || [];
 classList.value = strorgClassList.map((item) => {
@@ -163,7 +189,16 @@ onLoad((e) => {
   currentIndex.value = classList.value.findIndex((item) => {
     return item._id === currentId.value;
   });
+  currentInfo.value = classList.value[currentIndex.value];
+  readImgsChange();
 });
+
+const swiperChange = (e) => {
+  currentIndex.value = e.detail.current;
+  currentInfo.value = classList.value[currentIndex.value];
+  console.log(e);
+  readImgsChange();
+};
 
 // 点击info弹窗
 const clickInfo = () => {
@@ -177,16 +212,44 @@ const clickInfoClose = () => {
 
 // 点击评分弹窗
 const clickScore = () => {
+  if (currentInfo.value.userScore) {
+    isScore.value = true;
+    userScore.value = currentInfo.value.userScore;
+  }
   scorePopup.value.open();
 };
 // 点击关闭评分弹窗
 const clickScoreClose = () => {
   scorePopup.value.close();
+  userScore.value = 0; // 重置评分
+  isScore.value = false; // 重置评分状态
 };
 
 // 提交评分
-const submitScore = () => {
+const submitScore = async () => {
+  uni.showLoading({
+    title: "加载中...",
+  });
   console.log(`用户评分: ${userScore.value}`);
+  let { classid, _id: wallId } = currentInfo.value;
+  console.log(currentInfo.value);
+  let res = await apiGetSetupScore({
+    classid,
+    wallId,
+    userScore: userScore.value,
+  });
+  uni.hideLoading();
+  if (res.errCode === 0) {
+    uni.showToast({
+      title: "评分成功",
+      icon: "none",
+    });
+    classList.value[currentIndex.value].userScore = userScore.value;
+    uni.setStorageSync("storgeClassList", classList.value);
+    clickScoreClose();
+  }
+
+  console.log(res);
 };
 
 // 遮罩层状态
@@ -197,6 +260,50 @@ const maskChange = () => {
 // 返回上一页
 const goBack = () => {
   uni.navigateBack();
+};
+
+// 处理图片索引变化，确保前后各一张图片,
+function readImgsChange() {
+  readImgs.value.push(
+    currentIndex.value <= 0
+      ? classList.value.length - 1
+      : currentIndex.value - 1,
+    currentIndex.value,
+    currentIndex.value + 1 >= classList.value.length
+      ? 0
+      : currentIndex.value + 1,
+  );
+  readImgs.value = [...new Set(readImgs.value)]; // 去重
+}
+
+// 点击下载
+const clickDownload = () => {
+  // #ifdef H5
+  uni.showModal({
+    content: "请长按保存壁纸",
+    showCancel: false,
+  });
+  // #endif
+
+  // #ifndef H5
+  uni.getImageInfo({
+    src: currentInfo.value.picurl,
+    success: (res) => {
+      console.log(res);
+
+      uni.saveImageToPhotosAlbum({
+        filePath: res.path,
+        success: (result) => {
+          console.log(result);
+        },
+        fail: (error) => {
+          console.log(error);
+        },
+      });
+    },
+  });
+
+  // #endif
 };
 </script>
 

@@ -20,7 +20,11 @@
   </view>
 </template>
 
-<script setup></script>
+<script setup>
+// 在控制台打印 uni 相关信息
+console.log("uni 对象:", uni);
+console.log("平台信息:", uni.getSystemInfoSync());
+</script>
 
 <style lang="scss" scoped>
 .noticeLayout {
