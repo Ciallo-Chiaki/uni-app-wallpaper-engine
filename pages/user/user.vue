@@ -1,11 +1,18 @@
 <template>
   <view class="userLayout pageBg">
+    <view :style="{ height: getNavBarHeight() + 'px' }"></view>
     <view class="userInfo">
       <view class="avatar">
         <image src="../../static/logo.png" mode="aspectFill" />
       </view>
-      <view class="ip">192.168.1.1</view>
-      <view class="address">来自于：</view>
+      <view class="ip">{{ userInfo.IP }}</view>
+      <view class="address"
+        >来自于：{{
+          userInfo.address?.city ||
+          userInfo.address?.province ||
+          userInfo.address?.country
+        }}</view
+      >
     </view>
 
     <view class="section">
@@ -20,7 +27,7 @@
             <view class="text">我的下载</view>
           </view>
           <view class="right">
-            <view class="count">0</view>
+            <view class="count">{{ userInfo.downloadSize }}</view>
             <uni-icons type="right" color="#aaa" size="16" />
           </view>
         </view>
@@ -34,7 +41,7 @@
             <view class="text">我的评分</view>
           </view>
           <view class="right">
-            <view class="count">0</view>
+            <view class="count">{{ userInfo.scoreSize }}</view>
             <uni-icons type="right" color="#aaa" size="16" />
           </view>
         </view>
@@ -81,12 +88,27 @@
 </template>
 
 <script setup>
+import { getNavBarHeight } from "@/utils/system.js";
+import { apiGetUserInfo } from "@/api/apis.js";
+import { ref } from "vue";
+
+const userInfo = ref({});
+
 const clickContact = () => {
   // 这里可以添加拨打电话的逻辑
   uni.makePhoneCall({
     phoneNumber: "123456789", // 替换为实际的电话号码
   });
 };
+
+const getUserInfo = async () => {
+  apiGetUserInfo().then((res) => {
+    userInfo.value = res.data;
+    console.log("获取用户信息", userInfo.value);
+  });
+};
+
+getUserInfo();
 </script>
 
 <style lang="scss" scoped>

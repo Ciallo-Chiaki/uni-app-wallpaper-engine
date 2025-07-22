@@ -45,3 +45,27 @@ export function apiGetSetupScore(data = {}) {
     data: data,
   });
 }
+
+// 写入下载记录
+export function apiWriteDownload(data = {}) {
+  return request({
+    url: "/downloadWall",
+    data: data,
+  });
+}
+
+// 获取壁纸详情
+export function apiGetDetailWall(data = {}) {
+  return request({
+    url: "//detailWall",
+    data: data,
+  });
+}
+
+// 获取用户信息
+export function apiGetUserInfo(data = {}) {
+  return request({
+    url: "/userInfo",
+    data: data,
+  });
+}

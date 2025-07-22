@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_apis = require("../../api/apis.js");
+const utils_common = require("../../utils/common.js");
 if (!Array) {
   const _easycom_uni_load_more2 = common_vendor.resolveComponent("uni-load-more");
   _easycom_uni_load_more2();
@@ -18,10 +19,14 @@ const _sfc_main = {
       pageNum: 1,
       pageSize: 12
     };
+    let pageName;
     common_vendor.onLoad((e) => {
-      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:43", "e", e);
+      if (!id)
+        utils_common.goToHome();
+      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:52", "e", e);
       let { id = null, name = null } = e;
       queryParms.classid = id;
+      pageName = name;
       common_vendor.index.setNavigationBarTitle({ title: name });
       getClassList(queryParms);
     });
@@ -29,7 +34,7 @@ const _sfc_main = {
       if (noData.value) {
         return;
       }
-      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:55", "触底加载更多");
+      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:66", "触底加载更多");
       queryParms.pageNum++;
       getClassList(queryParms);
     });
@@ -43,6 +48,22 @@ const _sfc_main = {
       }
       common_vendor.index.setStorageSync("storgeClassList", classList.value);
     };
+    common_vendor.onShareAppMessage((e) => {
+      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:85", e);
+      return {
+        title: "别笑，你也过不了第二关",
+        path: "/pages/classlist/classlist?id=" + queryParms.classid + "&name=" + pageName
+      };
+    });
+    common_vendor.onShareTimeline(() => {
+      return {
+        title: "别笑，你也过不了第二关",
+        query: "id=" + queryParms.classid + "&name=" + pageName
+      };
+    });
+    common_vendor.onUnload(() => {
+      common_vendor.index.removeStorageSync("storgeClassList");
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: !classList.value.length && !noData.value
@@ -68,5 +89,6 @@ const _sfc_main = {
   }
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-bd381383"]]);
+_sfc_main.__runtimeHooks = 6;
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/classlist/classlist.js.map

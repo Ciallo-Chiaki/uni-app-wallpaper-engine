@@ -34,10 +34,31 @@ function apiGetSetupScore(data = {}) {
     data
   });
 }
+function apiWriteDownload(data = {}) {
+  return utils_request.request({
+    url: "/downloadWall",
+    data
+  });
+}
+function apiGetDetailWall(data = {}) {
+  return utils_request.request({
+    url: "//detailWall",
+    data
+  });
+}
+function apiGetUserInfo(data = {}) {
+  return utils_request.request({
+    url: "/userInfo",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetDayRandom = apiGetDayRandom;
+exports.apiGetDetailWall = apiGetDetailWall;
 exports.apiGetNotice = apiGetNotice;
 exports.apiGetSetupScore = apiGetSetupScore;
+exports.apiGetUserInfo = apiGetUserInfo;
+exports.apiWriteDownload = apiWriteDownload;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/apis.js.map

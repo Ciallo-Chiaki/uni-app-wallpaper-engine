@@ -25,8 +25,15 @@
 
 <script setup>
 import { ref } from "vue";
-import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import {
+  onLoad,
+  onUnload,
+  onReachBottom,
+  onShareAppMessage,
+  onShareTimeline,
+} from "@dcloudio/uni-app";
 import { apiGetClassList } from "@/api/apis.js";
+import { goToHome } from "@/utils/common.js";
 // 分类列表数据
 const classList = ref([]);
 
@@ -37,12 +44,16 @@ const queryParms = {
   pageNum: 1,
   pageSize: 12,
 };
+let pageName;
 
 onLoad((e) => {
+  if (!id) goToHome();
   // 页面加载时获取分类列表
   console.log("e", e);
   let { id = null, name = null } = e;
   queryParms.classid = id;
+  pageName = name;
+
   uni.setNavigationBarTitle({ title: name });
   getClassList(queryParms);
 });
@@ -68,6 +79,31 @@ const getClassList = async (value = {}) => {
   }
   uni.setStorageSync("storgeClassList", classList.value);
 };
+
+// 分享给好友
+onShareAppMessage((e) => {
+  console.log(e);
+  return {
+    title: "别笑，你也过不了第二关",
+    path:
+      "/pages/classlist/classlist?id=" +
+      queryParms.classid +
+      "&name=" +
+      pageName,
+  };
+});
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: "别笑，你也过不了第二关",
+    query: "id=" + queryParms.classid + "&name=" + pageName,
+  };
+});
+
+onUnload(() => {
+  uni.removeStorageSync("storgeClassList");
+});
 </script>
 
 <style lang="scss" scoped>

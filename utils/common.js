@@ -51,3 +51,16 @@ export function formatTime(timestamp) {
   // 一分钟内显示一分钟前
   return "1分钟前";
 }
+
+export function goToHome() {
+  uni.showModal({
+    title: "提示",
+    content: "页面有误将返回首页",
+    showCancel: true,
+    success: (res) => {
+      if (res.confirm) {
+        uni.reLaunch({ url: "/pages/index/index" });
+      }
+    },
+  });
+}

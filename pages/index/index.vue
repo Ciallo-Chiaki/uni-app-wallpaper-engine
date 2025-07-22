@@ -54,7 +54,7 @@
             class="box"
             v-for="item in randomList"
             :key="item._id"
-            @click="goPreview"
+            @click="goPreview(item._id)"
           >
             <image class="pic" :src="item.smallPicurl" mode="aspectFill" />
           </view>
@@ -97,6 +97,7 @@ import {
   apiGetNotice,
   apiGetClassify,
 } from "@/api/apis.js";
+import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 
 const bannerList = ref([]);
 const randomList = ref([]);
@@ -130,11 +131,28 @@ const getClassify = async () => {
 };
 
 // 跳转到预览页面
-const goPreview = () => {
+const goPreview = (id) => {
+  uni.setStorageSync("storgeClassList", randomList.value);
   uni.navigateTo({
-    url: "/pages/preview/preview",
+    url: "/pages/preview/preview?id=" + id,
   });
 };
+
+// 分享给好友
+onShareAppMessage((e) => {
+  console.log(e);
+  return {
+    title: "别笑，你也过不了第二关",
+    path: "/pages/index/index",
+  };
+});
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: "别笑，你也过不了第二关",
+  };
+});
 
 getBanner();
 getDayRandom();

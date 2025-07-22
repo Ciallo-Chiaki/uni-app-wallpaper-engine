@@ -21,6 +21,18 @@ const _sfc_main = {
       });
       classifyList.value = res.data;
     };
+    common_vendor.onShareAppMessage((e) => {
+      common_vendor.index.__f__("log", "at pages/classify/classify.vue:30", e);
+      return {
+        title: "别笑，你也过不了第二关",
+        path: "/pages/index/index"
+      };
+    });
+    common_vendor.onShareTimeline(() => {
+      return {
+        title: "别笑，你也过不了第二关"
+      };
+    });
     getClassify();
     return (_ctx, _cache) => {
       return {
@@ -41,5 +53,6 @@ const _sfc_main = {
   }
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-6bcfa975"]]);
+_sfc_main.__runtimeHooks = 6;
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/classify/classify.js.map

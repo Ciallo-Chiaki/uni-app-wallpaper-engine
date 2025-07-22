@@ -36,10 +36,19 @@ const _sfc_main = {
         picurl: item.smallPicurl.replace("_small.webp", ".jpg")
       };
     });
-    common_vendor.index.__f__("log", "at pages/preview/preview.vue:182", "获取缓存的分类列表", strorgClassList);
-    common_vendor.index.__f__("log", "at pages/preview/preview.vue:183", "处理后的分类列表", classList.value);
-    common_vendor.onLoad((e) => {
+    common_vendor.index.__f__("log", "at pages/preview/preview.vue:188", "获取缓存的分类列表", strorgClassList);
+    common_vendor.index.__f__("log", "at pages/preview/preview.vue:189", "处理后的分类列表", classList.value);
+    common_vendor.onLoad(async (e) => {
       currentId.value = e.id || null;
+      if (e.type === "share") {
+        let res = await api_apis.apiGetDetailWall({ id: currentId.value });
+        classList.value = res.data.map((item) => {
+          return {
+            ...item,
+            picurl: item.smallPicurl.replace("_small.webp", ".jpg")
+          };
+        });
+      }
       currentIndex.value = classList.value.findIndex((item) => {
         return item._id === currentId.value;
       });
@@ -49,7 +58,7 @@ const _sfc_main = {
     const swiperChange = (e) => {
       currentIndex.value = e.detail.current;
       currentInfo.value = classList.value[currentIndex.value];
-      common_vendor.index.__f__("log", "at pages/preview/preview.vue:199", e);
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:214", e);
       readImgsChange();
     };
     const clickInfo = () => {
@@ -74,9 +83,9 @@ const _sfc_main = {
       common_vendor.index.showLoading({
         title: "加载中..."
       });
-      common_vendor.index.__f__("log", "at pages/preview/preview.vue:233", `用户评分: ${userScore.value}`);
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:248", `用户评分: ${userScore.value}`);
       let { classid, _id: wallId } = currentInfo.value;
-      common_vendor.index.__f__("log", "at pages/preview/preview.vue:235", currentInfo.value);
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:250", currentInfo.value);
       let res = await api_apis.apiGetSetupScore({
         classid,
         wallId,
@@ -92,13 +101,19 @@ const _sfc_main = {
         common_vendor.index.setStorageSync("storgeClassList", classList.value);
         clickScoreClose();
       }
-      common_vendor.index.__f__("log", "at pages/preview/preview.vue:252", res);
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:267", res);
     };
     const maskChange = () => {
       maskState.value = !maskState.value;
     };
     const goBack = () => {
-      common_vendor.index.navigateBack();
+      common_vendor.index.navigateBack({
+        success: () => {
+        },
+        fail: () => {
+          common_vendor.index.reLaunch({ url: "/pages/index/index" });
+        }
+      });
     };
     function readImgsChange() {
       readImgs.value.push(
@@ -108,23 +123,88 @@ const _sfc_main = {
       );
       readImgs.value = [...new Set(readImgs.value)];
     }
-    const clickDownload = () => {
-      common_vendor.index.getImageInfo({
-        src: currentInfo.value.picurl,
-        success: (res) => {
-          common_vendor.index.__f__("log", "at pages/preview/preview.vue:292", res);
-          common_vendor.index.saveImageToPhotosAlbum({
-            filePath: res.path,
-            success: (result) => {
-              common_vendor.index.__f__("log", "at pages/preview/preview.vue:297", result);
-            },
-            fail: (error) => {
-              common_vendor.index.__f__("log", "at pages/preview/preview.vue:300", error);
-            }
-          });
-        }
-      });
+    const clickDownload = async () => {
+      try {
+        common_vendor.index.showLoading({
+          title: "下载中...",
+          mask: true
+        });
+        let { classid, _id: wallId } = currentInfo.value;
+        let res = await api_apis.apiWriteDownload({
+          classid,
+          wallId
+        });
+        if (res.errCode !== 0)
+          throw res;
+        common_vendor.index.__f__("log", "at pages/preview/preview.vue:323", "写入下载记录", res);
+        common_vendor.index.getImageInfo({
+          src: currentInfo.value.picurl,
+          success: (res2) => {
+            common_vendor.index.saveImageToPhotosAlbum({
+              filePath: res2.path,
+              success: (result) => {
+                common_vendor.index.showToast({
+                  title: "下载成功，请到相册查看",
+                  icon: "none"
+                });
+              },
+              fail: (err) => {
+                if (err.errMsg == "saveImageToPhotosAlbum:fail cancel") {
+                  common_vendor.index.showToast({
+                    title: "取消下载，请重新点击下载",
+                    icon: "none"
+                  });
+                  return;
+                }
+                common_vendor.index.showModal({
+                  title: "授权提示",
+                  content: "需要授权保存相册",
+                  success: (res3) => {
+                    if (res3.confirm) {
+                      common_vendor.index.openSetting({
+                        success: (setting) => {
+                          common_vendor.index.__f__("log", "at pages/preview/preview.vue:352", setting);
+                          if (setting.authSetting["scope.writePhotosAlbum"]) {
+                            common_vendor.index.showToast({
+                              title: "授权成功，请重新下载",
+                              icon: "none"
+                            });
+                          } else {
+                            common_vendor.index.showToast({
+                              title: "授权失败，请手动开启相册权限",
+                              icon: "none"
+                            });
+                          }
+                        }
+                      });
+                    }
+                  }
+                });
+              },
+              complete: () => {
+                common_vendor.index.hideLoading();
+              }
+            });
+          }
+        });
+      } catch (err) {
+        common_vendor.index.__f__("log", "at pages/preview/preview.vue:377", err);
+        common_vendor.index.hideLoading();
+      }
     };
+    common_vendor.onShareAppMessage((e) => {
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:386", e);
+      return {
+        title: "别笑，你也过不了第二关",
+        path: "/pages/preview/preview?id=" + currentId.value + "&type=share"
+      };
+    });
+    common_vendor.onShareTimeline(() => {
+      return {
+        title: "别笑，你也过不了第二关",
+        query: "id=" + currentId.value + "&type=share"
+      };
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.f(classList.value, (item, index, i0) => {
@@ -206,6 +286,7 @@ const _sfc_main = {
           "k": "infoPopup"
         }),
         E: common_vendor.p({
+          ["safe-area"]: false,
           type: "bottom"
         }),
         F: common_vendor.t(isScore.value ? "已经评过分啦 ~" : "壁纸评分"),
@@ -237,5 +318,6 @@ const _sfc_main = {
   }
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-2dad6c07"]]);
+_sfc_main.__runtimeHooks = 6;
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/preview/preview.js.map

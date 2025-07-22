@@ -48,7 +48,7 @@
       </view>
     </view>
 
-    <uni-popup ref="infoPopup" type="bottom">
+    <uni-popup ref="infoPopup" :safe-area="false" type="bottom">
       <view class="infoPopup">
         <view class="popHeader">
           <view></view>
@@ -112,6 +112,8 @@
               Aut autem aperiam error harum quo cumque iure accusamus? Nisi et
               illo eum.
             </view>
+
+            <view class="safe-area-inset-bottom"></view>
           </view>
         </scroll-view>
       </view>
@@ -158,8 +160,12 @@
 <script setup>
 import { ref } from "vue";
 import { getStatusBarHeight } from "@/utils/system";
-import { onLoad } from "@dcloudio/uni-app";
-import { apiGetSetupScore } from "@/api/apis";
+import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
+import {
+  apiGetSetupScore,
+  apiWriteDownload,
+  apiGetDetailWall,
+} from "@/api/apis";
 
 const maskState = ref(true);
 const infoPopup = ref(null);
@@ -182,10 +188,19 @@ classList.value = strorgClassList.map((item) => {
 console.log("获取缓存的分类列表", strorgClassList);
 console.log("处理后的分类列表", classList.value);
 
-onLoad((e) => {
+onLoad(async (e) => {
   // 页面加载时获取分类列表
   // console.log("e", e.id);
   currentId.value = e.id || null;
+  if (e.type === "share") {
+    let res = await apiGetDetailWall({ id: currentId.value });
+    classList.value = res.data.map((item) => {
+      return {
+        ...item,
+        picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
+      };
+    });
+  }
   currentIndex.value = classList.value.findIndex((item) => {
     return item._id === currentId.value;
   });
@@ -259,7 +274,12 @@ const maskChange = () => {
 
 // 返回上一页
 const goBack = () => {
-  uni.navigateBack();
+  uni.navigateBack({
+    success: () => {},
+    fail: () => {
+      uni.reLaunch({ url: "/pages/index/index" });
+    },
+  });
 };
 
 // 处理图片索引变化，确保前后各一张图片,
@@ -277,7 +297,7 @@ function readImgsChange() {
 }
 
 // 点击下载
-const clickDownload = () => {
+const clickDownload = async () => {
   // #ifdef H5
   uni.showModal({
     content: "请长按保存壁纸",
@@ -286,25 +306,97 @@ const clickDownload = () => {
   // #endif
 
   // #ifndef H5
-  uni.getImageInfo({
-    src: currentInfo.value.picurl,
-    success: (res) => {
-      console.log(res);
+  try {
+    uni.showLoading({
+      title: "下载中...",
+      mask: true,
+    });
 
-      uni.saveImageToPhotosAlbum({
-        filePath: res.path,
-        success: (result) => {
-          console.log(result);
-        },
-        fail: (error) => {
-          console.log(error);
-        },
-      });
-    },
-  });
+    let { classid, _id: wallId } = currentInfo.value;
+    let res = await apiWriteDownload({
+      classid,
+      wallId,
+    });
+
+    if (res.errCode !== 0) throw res;
+
+    console.log("写入下载记录", res);
+
+    uni.getImageInfo({
+      src: currentInfo.value.picurl,
+      success: (res) => {
+        //
+        uni.saveImageToPhotosAlbum({
+          filePath: res.path,
+          success: (result) => {
+            uni.showToast({
+              title: "下载成功，请到相册查看",
+              icon: "none",
+            });
+          },
+          fail: (err) => {
+            if (err.errMsg == "saveImageToPhotosAlbum:fail cancel") {
+              uni.showToast({
+                title: "取消下载，请重新点击下载",
+                icon: "none",
+              });
+              return;
+            }
+            uni.showModal({
+              title: "授权提示",
+              content: "需要授权保存相册",
+              success: (res) => {
+                if (res.confirm) {
+                  uni.openSetting({
+                    success: (setting) => {
+                      console.log(setting);
+                      if (setting.authSetting["scope.writePhotosAlbum"]) {
+                        uni.showToast({
+                          title: "授权成功，请重新下载",
+                          icon: "none",
+                        });
+                      } else {
+                        uni.showToast({
+                          title: "授权失败，请手动开启相册权限",
+                          icon: "none",
+                        });
+                      }
+                    },
+                  });
+                }
+              },
+            });
+          },
+          complete: () => {
+            uni.hideLoading();
+          },
+        });
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    uni.hideLoading();
+  }
 
   // #endif
 };
+
+// 分享给好友
+onShareAppMessage((e) => {
+  console.log(e);
+  return {
+    title: "别笑，你也过不了第二关",
+    path: "/pages/preview/preview?id=" + currentId.value + "&type=share",
+  };
+});
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: "别笑，你也过不了第二关",
+    query: "id=" + currentId.value + "&type=share",
+  };
+});
 </script>
 
 <style lang="scss" scoped>

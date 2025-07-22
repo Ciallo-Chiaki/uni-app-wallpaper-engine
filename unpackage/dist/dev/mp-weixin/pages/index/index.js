@@ -42,11 +42,24 @@ const _sfc_main = {
       });
       classifyList.value = res.data;
     };
-    const goPreview = () => {
+    const goPreview = (id) => {
+      common_vendor.index.setStorageSync("storgeClassList", randomList.value);
       common_vendor.index.navigateTo({
-        url: "/pages/preview/preview"
+        url: "/pages/preview/preview?id=" + id
       });
     };
+    common_vendor.onShareAppMessage((e) => {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:143", e);
+      return {
+        title: "别笑，你也过不了第二关",
+        path: "/pages/index/index"
+      };
+    });
+    common_vendor.onShareTimeline(() => {
+      return {
+        title: "别笑，你也过不了第二关"
+      };
+    });
     getBanner();
     getDayRandom();
     getNotice();
@@ -91,7 +104,7 @@ const _sfc_main = {
           return {
             a: item.smallPicurl,
             b: item._id,
-            c: common_vendor.o(goPreview, item._id)
+            c: common_vendor.o(($event) => goPreview(item._id), item._id)
           };
         }),
         i: common_vendor.f(classifyList.value, (item, k0, i0) => {
@@ -111,5 +124,6 @@ const _sfc_main = {
   }
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-1cf27b2a"]]);
+_sfc_main.__runtimeHooks = 6;
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/index/index.js.map
