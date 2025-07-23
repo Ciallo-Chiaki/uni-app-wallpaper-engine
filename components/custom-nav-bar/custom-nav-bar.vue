@@ -13,7 +13,14 @@
         }"
       >
         <view class="title">{{ title }}</view>
-        <view class="search">
+        <view
+          class="search"
+          @click="
+            () => {
+              uni.navigateTo({ url: '/pages/search/search' });
+            }
+          "
+        >
           <uni-icons class="icon" type="search" color="#888" size="18" />
           <text class="text">搜索</text>
         </view>

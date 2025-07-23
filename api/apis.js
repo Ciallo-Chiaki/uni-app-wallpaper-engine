@@ -69,3 +69,27 @@ export function apiGetUserInfo(data = {}) {
     data: data,
   });
 }
+
+// 我的评分/下载列表
+export function apiGetHistoryList(data = {}) {
+  return request({
+    url: "/userWallList",
+    data: data,
+  });
+}
+
+// 获取公告详情
+export function apiGetNoticeDetail(data = {}) {
+  return request({
+    url: "/wallNewsDetail",
+    data: data,
+  });
+}
+
+// 搜索
+export function apiGetSearchData(data = {}) {
+  return request({
+    url: "/searchWall",
+    data: data,
+  });
+}

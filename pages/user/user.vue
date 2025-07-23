@@ -20,7 +20,12 @@
         <!-- 跳转classlist -->
         <view
           class="row"
-          @click="() => uni.navigateTo({ url: '/pages/classlist/classlist' })"
+          @click="
+            () =>
+              uni.navigateTo({
+                url: '/pages/classlist/classlist?name=我的下载&type=download',
+              })
+          "
         >
           <view class="left">
             <uni-icons type="download-filled" color="#28b389" size="20" />
@@ -34,7 +39,12 @@
 
         <view
           class="row"
-          @click="() => uni.navigateTo({ url: '/pages/classlist/classlist' })"
+          @click="
+            () =>
+              uni.navigateTo({
+                url: '/pages/classlist/classlist?name=我的评分&type=score',
+              })
+          "
         >
           <view class="left">
             <uni-icons type="star-filled" color="#28b389" size="20" />
@@ -65,7 +75,16 @@
     <view class="section">
       <view class="list">
         <view class="row">
-          <view class="left">
+          <view
+            class="left"
+            @click="
+              () => {
+                uni.navigateTo({
+                  url: '/pages/notice/notice?id=65361e318b0da4ca084e3ce0',
+                });
+              }
+            "
+          >
             <uni-icons type="notification-filled" color="#28b389" size="20" />
             <view class="text">订阅更新</view>
           </view>
@@ -74,7 +93,16 @@
           </view>
         </view>
         <view class="row">
-          <view class="left">
+          <view
+            class="left"
+            @click="
+              () => {
+                uni.navigateTo({
+                  url: '/pages/notice/notice?id=6536358ce0ec19c8d67fbe82',
+                });
+              }
+            "
+          >
             <uni-icons type="flag-filled" color="#28b389" size="20" />
             <view class="text">常见问题</view>
           </view>

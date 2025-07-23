@@ -52,12 +52,33 @@ function apiGetUserInfo(data = {}) {
     data
   });
 }
+function apiGetHistoryList(data = {}) {
+  return utils_request.request({
+    url: "/userWallList",
+    data
+  });
+}
+function apiGetNoticeDetail(data = {}) {
+  return utils_request.request({
+    url: "/wallNewsDetail",
+    data
+  });
+}
+function apiGetSearchData(data = {}) {
+  return utils_request.request({
+    url: "/searchWall",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetDayRandom = apiGetDayRandom;
 exports.apiGetDetailWall = apiGetDetailWall;
+exports.apiGetHistoryList = apiGetHistoryList;
 exports.apiGetNotice = apiGetNotice;
+exports.apiGetNoticeDetail = apiGetNoticeDetail;
+exports.apiGetSearchData = apiGetSearchData;
 exports.apiGetSetupScore = apiGetSetupScore;
 exports.apiGetUserInfo = apiGetUserInfo;
 exports.apiWriteDownload = apiWriteDownload;

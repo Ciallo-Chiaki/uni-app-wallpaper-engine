@@ -29,7 +29,7 @@ const _sfc_main = {
     const readImgs = common_vendor.ref([]);
     const currentInfo = common_vendor.ref(null);
     const isScore = common_vendor.ref(false);
-    const strorgClassList = common_vendor.index.getStorageSync("storgeClassList") || [];
+    const strorgClassList = common_vendor.index.getStorageSync("storageClassList") || [];
     classList.value = strorgClassList.map((item) => {
       return {
         ...item,
@@ -98,7 +98,7 @@ const _sfc_main = {
           icon: "none"
         });
         classList.value[currentIndex.value].userScore = userScore.value;
-        common_vendor.index.setStorageSync("storgeClassList", classList.value);
+        common_vendor.index.setStorageSync("storageClassList", classList.value);
         clickScoreClose();
       }
       common_vendor.index.__f__("log", "at pages/preview/preview.vue:267", res);

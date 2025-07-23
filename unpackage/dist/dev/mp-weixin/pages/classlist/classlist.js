@@ -1,7 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_apis = require("../../api/apis.js");
-const utils_common = require("../../utils/common.js");
 if (!Array) {
   const _easycom_uni_load_more2 = common_vendor.resolveComponent("uni-load-more");
   _easycom_uni_load_more2();
@@ -21,11 +20,12 @@ const _sfc_main = {
     };
     let pageName;
     common_vendor.onLoad((e) => {
-      if (!id)
-        utils_common.goToHome();
       common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:52", "e", e);
-      let { id = null, name = null } = e;
-      queryParms.classid = id;
+      let { id = null, name = null, type = null } = e;
+      if (type)
+        queryParms.type = type;
+      if (id)
+        queryParms.classid = id;
       pageName = name;
       common_vendor.index.setNavigationBarTitle({ title: name });
       getClassList(queryParms);
@@ -34,22 +34,26 @@ const _sfc_main = {
       if (noData.value) {
         return;
       }
-      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:66", "触底加载更多");
+      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:67", "触底加载更多");
       queryParms.pageNum++;
       getClassList(queryParms);
     });
     const getClassList = async (value = {}) => {
-      let res = await api_apis.apiGetClassList(value);
+      let res;
+      if (queryParms.classid)
+        res = await api_apis.apiGetClassList(value);
+      if (queryParms.type)
+        res = await api_apis.apiGetHistoryList(value);
       classList.value = [...classList.value, ...res.data];
       if (res.data.length < queryParms.pageSize) {
         noData.value = true;
       } else {
         noData.value = false;
       }
-      common_vendor.index.setStorageSync("storgeClassList", classList.value);
+      common_vendor.index.setStorageSync("storageClassList", classList.value);
     };
     common_vendor.onShareAppMessage((e) => {
-      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:85", e);
+      common_vendor.index.__f__("log", "at pages/classlist/classlist.vue:91", e);
       return {
         title: "别笑，你也过不了第二关",
         path: "/pages/classlist/classlist?id=" + queryParms.classid + "&name=" + pageName
@@ -62,7 +66,7 @@ const _sfc_main = {
       };
     });
     common_vendor.onUnload(() => {
-      common_vendor.index.removeStorageSync("storgeClassList");
+      common_vendor.index.removeStorageSync("storageClassList");
     });
     return (_ctx, _cache) => {
       return common_vendor.e({

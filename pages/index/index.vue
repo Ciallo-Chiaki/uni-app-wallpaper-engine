@@ -11,7 +11,22 @@
         circular
       >
         <swiper-item v-for="item in bannerList" :key="item._id">
-          <image :src="item.picurl" mode="scaleToFill" />
+          <navigator
+            v-if="item.target === 'miniProgram'"
+            :url="item.url"
+            class="link"
+            target="miniProgram"
+            :app-id="item.appid"
+          >
+            <image :src="item.picurl" mode="scaleToFill" />
+          </navigator>
+          <navigator
+            v-else
+            :url="`/pages/classlist/classlist?${item.url}`"
+            class="link"
+          >
+            <image :src="item.picurl" mode="scaleToFill" />
+          </navigator>
         </swiper-item>
       </swiper>
     </view>
@@ -24,7 +39,7 @@
       <view class="center">
         <swiper vertical autoplay interval="1500" duration="300" circular>
           <swiper-item v-for="item in noticeList" :key="item._id">
-            <navigator url="/pages/notice/notice">
+            <navigator :url="'/pages/notice/notice?id=' + item._id">
               {{ item.title }}
             </navigator>
           </swiper-item>
@@ -67,8 +82,8 @@
         <template #name>专题精选</template>
         <template #custom>
           <navigator
-            url="/pages/"
-            open-type="navigate"
+            url="/pages/classify/classify"
+            open-type="reLaunch"
             hover-class="navigator-hover"
             class="more"
           >
@@ -132,7 +147,7 @@ const getClassify = async () => {
 
 // 跳转到预览页面
 const goPreview = (id) => {
-  uni.setStorageSync("storgeClassList", randomList.value);
+  uni.setStorageSync("storageClassList", randomList.value);
   uni.navigateTo({
     url: "/pages/preview/preview?id=" + id,
   });
@@ -172,10 +187,14 @@ getClassify();
         width: 100%;
         height: 100%;
         padding: 0 30rpx;
-        image {
+        .link {
           width: 100%;
           height: 100%;
-          border-radius: 10rpx;
+          image {
+            width: 100%;
+            height: 100%;
+            border-radius: 10rpx;
+          }
         }
       }
     }

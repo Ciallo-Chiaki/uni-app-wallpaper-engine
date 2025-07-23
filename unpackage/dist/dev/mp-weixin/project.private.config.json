@@ -10,18 +10,5 @@
     "autoAudits": false,
     "showShadowRootInWxmlPanel": true,
     "compileHotReLoad": true
-  },
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/classlist/classlist",
-          "pathName": "pages/classlist/classlist",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        }
-      ]
-    }
   }
 }

@@ -1,5 +1,5 @@
 "use strict";
-const common_vendor = require("../common/vendor.js");
+require("../common/vendor.js");
 function formatTime(timestamp) {
   const now = Date.now();
   const time = typeof timestamp === "string" ? parseInt(timestamp) : timestamp;
@@ -33,18 +33,5 @@ function formatTime(timestamp) {
   }
   return "1分钟前";
 }
-function goToHome() {
-  common_vendor.index.showModal({
-    title: "提示",
-    content: "页面有误将返回首页",
-    showCancel: true,
-    success: (res) => {
-      if (res.confirm) {
-        common_vendor.index.reLaunch({ url: "/pages/index/index" });
-      }
-    }
-  });
-}
 exports.formatTime = formatTime;
-exports.goToHome = goToHome;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/utils/common.js.map

@@ -32,7 +32,7 @@ import {
   onShareAppMessage,
   onShareTimeline,
 } from "@dcloudio/uni-app";
-import { apiGetClassList } from "@/api/apis.js";
+import { apiGetClassList, apiGetHistoryList } from "@/api/apis.js";
 import { goToHome } from "@/utils/common.js";
 // 分类列表数据
 const classList = ref([]);
@@ -47,11 +47,12 @@ const queryParms = {
 let pageName;
 
 onLoad((e) => {
-  if (!id) goToHome();
+  // if (!id) goToHome();
   // 页面加载时获取分类列表
   console.log("e", e);
-  let { id = null, name = null } = e;
-  queryParms.classid = id;
+  let { id = null, name = null, type = null } = e;
+  if (type) queryParms.type = type;
+  if (id) queryParms.classid = id;
   pageName = name;
 
   uni.setNavigationBarTitle({ title: name });
@@ -70,14 +71,19 @@ onReachBottom(() => {
 
 // 获取分类列表
 const getClassList = async (value = {}) => {
-  let res = await apiGetClassList(value);
+  let res;
+  // 如果有classid，则获取该分类下的壁纸列表
+  if (queryParms.classid) res = await apiGetClassList(value);
+  // 否则获取历史记录（评分/下载）
+  if (queryParms.type) res = await apiGetHistoryList(value);
+
   classList.value = [...classList.value, ...res.data];
   if (res.data.length < queryParms.pageSize) {
     noData.value = true; // 没有更多数据
   } else {
     noData.value = false; // 还有数据
   }
-  uni.setStorageSync("storgeClassList", classList.value);
+  uni.setStorageSync("storageClassList", classList.value);
 };
 
 // 分享给好友
@@ -102,7 +108,7 @@ onShareTimeline(() => {
 });
 
 onUnload(() => {
-  uni.removeStorageSync("storgeClassList");
+  uni.removeStorageSync("storageClassList");
 });
 </script>
 

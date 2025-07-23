@@ -1,29 +1,54 @@
 <template>
   <view class="noticeLayout">
     <view class="title">
-      <view class="tag">
+      <view class="tag" v-if="detail.select">
         <uni-tag text="置顶" type="error" inverted @click="" />
       </view>
-      <view class="font">这个区域填写标题</view>
+      <view class="font">{{ detail.title }}</view>
     </view>
 
     <view class="info">
-      <view class="item">若叶睦</view>
+      <view class="item">{{ detail.author }}</view>
       <view class="item">
-        <uni-dateformat :date="Date.now()" format="yyyy/MM/dd hh:mm:ss" />
+        <uni-dateformat
+          :date="detail.publish_date"
+          format="yyyy/MM/dd hh:mm:ss"
+        />
       </view>
     </view>
 
-    <view class="content"> 内容区域 </view>
+    <view class="content">
+      <!-- <rich-text :nodes="detail.content"></rich-text> -->
+      <mp-html :content="detail.content" />
+    </view>
 
-    <view class="count"> 阅读 114514 </view>
+    <view class="count"> 阅读 {{ detail.view_count }} </view>
   </view>
 </template>
 
 <script setup>
+import { apiGetNoticeDetail } from "@/api/apis.js";
+import { ref } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
+
 // 在控制台打印 uni 相关信息
 console.log("uni 对象:", uni);
 console.log("平台信息:", uni.getSystemInfoSync());
+
+const detail = ref({});
+let noticeId;
+
+onLoad((e) => {
+  // 页面加载时获取公告详情
+  noticeId = e.id;
+  getNoticeDetail();
+});
+
+const getNoticeDetail = () => {
+  apiGetNoticeDetail({ id: noticeId }).then((res) => {
+    detail.value = res.data;
+  });
+};
 </script>
 
 <style lang="scss" scoped>

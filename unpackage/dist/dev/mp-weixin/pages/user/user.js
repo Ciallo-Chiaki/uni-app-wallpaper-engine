@@ -18,7 +18,7 @@ const _sfc_main = {
     const getUserInfo = async () => {
       api_apis.apiGetUserInfo().then((res) => {
         userInfo.value = res.data;
-        common_vendor.index.__f__("log", "at pages/user/user.vue:107", "获取用户信息", userInfo.value);
+        common_vendor.index.__f__("log", "at pages/user/user.vue:135", "获取用户信息", userInfo.value);
       });
     };
     getUserInfo();
@@ -41,7 +41,7 @@ const _sfc_main = {
           size: "16"
         }),
         h: common_vendor.o(() => common_vendor.index.navigateTo({
-          url: "/pages/classlist/classlist"
+          url: "/pages/classlist/classlist?name=我的下载&type=download"
         })),
         i: common_vendor.p({
           type: "star-filled",
@@ -55,7 +55,7 @@ const _sfc_main = {
           size: "16"
         }),
         l: common_vendor.o(() => common_vendor.index.navigateTo({
-          url: "/pages/classlist/classlist"
+          url: "/pages/classlist/classlist?name=我的评分&type=score"
         })),
         m: common_vendor.p({
           type: "chatboxes-filled",
@@ -72,17 +72,27 @@ const _sfc_main = {
           color: "#28b389",
           size: "20"
         }),
-        p: common_vendor.p({
+        p: common_vendor.o(() => {
+          common_vendor.index.navigateTo({
+            url: "/pages/notice/notice?id=65361e318b0da4ca084e3ce0"
+          });
+        }),
+        q: common_vendor.p({
           type: "right",
           color: "#aaa",
           size: "16"
         }),
-        q: common_vendor.p({
+        r: common_vendor.p({
           type: "flag-filled",
           color: "#28b389",
           size: "20"
         }),
-        r: common_vendor.p({
+        s: common_vendor.o(() => {
+          common_vendor.index.navigateTo({
+            url: "/pages/notice/notice?id=6536358ce0ec19c8d67fbe82"
+          });
+        }),
+        t: common_vendor.p({
           type: "right",
           color: "#aaa",
           size: "16"

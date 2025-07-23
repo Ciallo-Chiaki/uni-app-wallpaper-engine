@@ -178,7 +178,7 @@ const readImgs = ref([]);
 const currentInfo = ref(null);
 const isScore = ref(false);
 
-const strorgClassList = uni.getStorageSync("storgeClassList") || [];
+const strorgClassList = uni.getStorageSync("storageClassList") || [];
 classList.value = strorgClassList.map((item) => {
   return {
     ...item,
@@ -260,7 +260,7 @@ const submitScore = async () => {
       icon: "none",
     });
     classList.value[currentIndex.value].userScore = userScore.value;
-    uni.setStorageSync("storgeClassList", classList.value);
+    uni.setStorageSync("storageClassList", classList.value);
     clickScoreClose();
   }
 

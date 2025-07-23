@@ -27,9 +27,14 @@ const _sfc_main = {
           color: "#888",
           size: "18"
         }),
-        d: common_vendor.unref(utils_system.getTitleBarHeight)() + "px",
-        e: common_vendor.unref(utils_system.getLeftIconLeft)() + "px",
-        f: common_vendor.unref(utils_system.getNavBarHeight)() + "px"
+        d: common_vendor.o(() => {
+          common_vendor.index.navigateTo({
+            url: "/pages/search/search"
+          });
+        }),
+        e: common_vendor.unref(utils_system.getTitleBarHeight)() + "px",
+        f: common_vendor.unref(utils_system.getLeftIconLeft)() + "px",
+        g: common_vendor.unref(utils_system.getNavBarHeight)() + "px"
       };
     };
   }
